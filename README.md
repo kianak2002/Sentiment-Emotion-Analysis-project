@@ -1,4 +1,5 @@
 # AL_Pro4import string
+import string
 
 '''
     to make 4 dictionary and count the repetition 
@@ -12,7 +13,6 @@
 class dictionary:
     def __init__(self):
         f_pos = open('rt-polarity.pos', "r")
-        print(type(f_pos.readline()))
         txt_pos = f_pos.read().split()
         # print(txt_pos)
         self.pos = txt_pos
@@ -130,12 +130,12 @@ class dictionary:
         delete, list_delete = [], []
         counter = 0
         # print(len(self.dic_pos_bigram))
-        for i in self.dic_pos_bigram.keys():
-            if self.dic_pos_bigram[i] == 961 or self.dic_pos_bigram[i] == 720 or self.dic_pos_bigram[i] == 696 or \
-                    self.dic_pos_bigram[i] == 615 or self.dic_pos_bigram[i] == 514 or self.dic_pos_bigram[i] == 477 \
-                    or self.dic_pos_bigram[i] == 332 or self.dic_pos_bigram[i] == 296 or self.dic_pos_bigram[i] == 282 \
-                    or self.dic_pos_bigram[i] == 262:
-                print(i, self.dic_pos_bigram[i])
+        # for i in self.dic_pos_bigram.keys():
+        #     if self.dic_pos_bigram[i] == 961 or self.dic_pos_bigram[i] == 720 or self.dic_pos_bigram[i] == 696 or \
+        #             self.dic_pos_bigram[i] == 615 or self.dic_pos_bigram[i] == 514 or self.dic_pos_bigram[i] == 477 \
+        #             or self.dic_pos_bigram[i] == 332 or self.dic_pos_bigram[i] == 296 or self.dic_pos_bigram[i] == 282 \
+        #             or self.dic_pos_bigram[i] == 262:
+        #         print(i, self.dic_pos_bigram[i])
             # if i == 'why did':
             #     print('hiiiiiii')
         for i in reversed(sorted(self.dic_pos_bigram.values())):
@@ -260,10 +260,10 @@ class calculator:
     '''
 
     def possibility_bigram(self):
-        landa3 = 0.6
-        landa2 = 0.35
-        landa1 = 0.05
-        teta = 0.15
+        landa3 = 0.75
+        landa2 = 0.24
+        landa1 = 0.01
+        teta = 0.005
         multi_pos, multi_neg = 1, 1
         pos_unigram, con_pos_bigram, M_pos = self.count_w_pos()
         print('M pos', M_pos)
@@ -273,10 +273,10 @@ class calculator:
                 sub = landa3 * (con_pos_bigram[i] / pos_unigram[i]) + landa2 * (pos_unigram[i + 1] / M_pos) + (
                         landa1 * teta)
             else:
-                sub = landa2 * (pos_unigram[i + 1] / M_pos) + (landa1 * teta)
+                sub = landa3 * (con_pos_bigram[i]) + landa2 * (pos_unigram[i + 1] / M_pos) + (landa1 * teta)
             multi_pos *= sub
         if pos_unigram[0] != 0:
-            multi_pos *= pos_unigram[0] / M_pos
+            multi_pos *= (landa2 * pos_unigram[0] / M_pos) + (landa1 * teta)
         print('pos', multi_pos * 1000000)
 
         neg_unigram, con_neg_bigram, M_neg = self.count_w_neg()
@@ -288,11 +288,11 @@ class calculator:
                         landa1 * teta)
             else:
                 print('jjjjj')
-                sub = landa2 * (neg_unigram[i + 1] / M_neg) + (landa1 * teta)
+                sub = landa3 * (con_neg_bigram[i]) + landa2 * (neg_unigram[i + 1] / M_neg) + (landa1 * teta)
             print(sub)
             multi_neg *= sub
         if neg_unigram[0] != 0:
-            multi_neg *= neg_unigram[0] / M_neg
+            multi_neg *= (landa2 * neg_unigram[0] / M_neg) + (landa1 * teta)
         print('neg', multi_neg * 1000000)
 
         return multi_pos, multi_neg
@@ -303,14 +303,19 @@ class calculator:
     '''
 
     def possibility_unigram(self):
+        landa2 = 0.95
+        landa1 = 0.05
+        teta = 0.005
         multi_pos, multi_neg = 1, 1
         pos_unigram, con_pos_bigram, M_pos = self.count_w_pos()
         for i in range(len(self.words)):
-            multi_pos *= (pos_unigram[i] / M_pos)
+            multi_pos *= landa2 * (pos_unigram[i] / M_pos) + (landa1 * teta)
+        print('pos', multi_pos * 1000000)
 
         neg_unigram, con_neg_bigram, M_neg = self.count_w_neg()
         for i in range(len(self.words)):
-            multi_neg *= (neg_unigram[i] / M_neg)
+            multi_neg *= landa2*(neg_unigram[i] / M_neg) + (landa1 * teta)
+        print('neg', multi_neg * 1000000)
 
         return multi_pos, multi_neg
 
@@ -329,6 +334,7 @@ if __name__ == '__main__':
     dic_pos_bigram, dic_neg_bigram = dic.decrease_bigram()
     print('\n\n')
     while True:
+        print('Enter the comment:\n> ', end='')
         words = input().split()
         if words[0] != '!q':
             cal = calculator(dic_pos_unigram, dic_neg_unigram, dic_pos_bigram, dic_neg_bigram, words)
