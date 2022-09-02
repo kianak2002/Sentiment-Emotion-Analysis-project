@@ -1,7 +1,7 @@
 ## Natural Language Processing project for AI course
 instructed by [Dr.Behnam Roshanfekr](https://scholar.google.fr/citations?user=uU25R5IAAAAJ&hl=en)
 
-we [sara tajernai](https://github.com/sara-tajernia/AL_Pro4/commits?author=sara-tajernia) and i worked as
+we [sara tajernia](https://github.com/sara-tajernia/AL_Pro4/commits?author=sara-tajernia) and i worked as
 a group and implemented this NLP project together.
 
 ## Main Purpose
